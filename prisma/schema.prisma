@@ -9,9 +9,63 @@ datasource db {
 
 // ตัวอย่าง Model
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-} 
+  employeeId   Int        @id
+  hashPassword String
+  firstName    String
+  lastName     String
+  department   Department @relation(fields: [departmentId], references: [id])
+  departmentId Int
+  position     Position   @relation(fields: [positionId], references: [id])
+  positionId   Int
+  role         Role
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  List         List[]
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+model Department {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+}
+
+model Position {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+}
+
+model Item_type {
+  id   Int    @id @default(autoincrement())
+  name String
+  List List[]
+}
+
+enum ListStatus {
+  PENDING // รอดำเนินการ
+  COMPLETED // เสร็จสิ้น
+  CANCELLED // ยกเลิก
+}
+
+model List {
+  id          Int        @id @default(autoincrement())
+  userId      Int
+  user        User       @relation(fields: [userId], references: [employeeId])
+  item_type   Item_type  @relation(fields: [itemTypeId], references: [id])
+  itemTypeId  Int
+  orderNumber String
+  amount      Float
+  status      ListStatus @default(PENDING)
+  note        String? // หมายเหตุ
+  isReceived  Boolean    @default(false) // สถานะการรับเงิน
+  startDate   DateTime? // วันเดินทางไป
+  endDate     DateTime? // วันเดินทางกลับ
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
