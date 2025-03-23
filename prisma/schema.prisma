@@ -49,6 +49,7 @@ model Item_type {
 
 enum ListStatus {
   PENDING // รอดำเนินการ
+  EDIT // แก้ไข
   COMPLETED // เสร็จสิ้น
   CANCELLED // ยกเลิก
 }
